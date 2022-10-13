@@ -22,25 +22,28 @@ def checkEqual(a, b):
     else:
         return False
 
-def printY(msg):
-    print(f"\u001b[33m {msg}")
+def turnGreen(msg):
+    return f"\033[1;32m{msg.upper()}\033[0m"
 
-def printG(msg):
-    print(f"\033[1;32m {msg}")
+def turnYellow(msg):
+    return f"\u001b[33m{msg.upper()}\033[0m"
 
-def getBrickColor(a):
-    greyEmoji = "⬛"
-    yellowEmoji = "🟨"
+def turnBlack(msg):
+    return f"\033[0;30m{msg.upper()}\033[0m"
+
+def turnRed(msg):
+    return f"\033[0;31m{msg}\033[0m"
+
+def getStringColor(a):
     for i in range(0, len(WORD)):
         bool = checkEqual(a, table[i])
         if bool == True:
-            return yellowEmoji
-    return greyEmoji
+            return turnYellow(a)
+    return turnBlack(a)
 
 gameRounds = 0
 def checkWord(text):
     global gameRounds
-    greenEmoji = "🟩"
     final = ""
     guessTable = []
     Finished = 0
@@ -49,14 +52,15 @@ def checkWord(text):
 
     for i in range(0, len(WORD)):
         bool = checkEqual(guessTable[i], table[i])
-        brickColor = getBrickColor(guessTable[i])
+        stringColor = getStringColor(guessTable[i])
         if bool == True:
             Finished = Finished + 1
-            final = final + f"[{greenEmoji}]"
+            local = guessTable[i]
+            final = final + f"【{turnGreen(local)}】"
         else:
-            final = final + f"[{brickColor}]"
+            final = final + f"【{stringColor}】"
     if Finished == 5:
-        print("YOU GUESSSED IT! WINNER WINNER CHICKEN DINNER!")
+        print(turnGreen("YOU GUESSSED IT! WINNER WINNER CHICKEN DINNER!"))
         exit()
     gameRounds = gameRounds + 1
     return final
@@ -86,21 +90,8 @@ print("Enter Your Third Guess:")
 guess()
 print("Enter Your Fourth Guess:")
 guess()
-""" _______________________
-【   】【   】【   】【   】【   】
-【   】【   】【   】【   】【   】
-【   】【   】【   】【   】【   】
-【   】【   】【   】【   】【   】
-【   】【   】【   】【   】【   】
-【   】【   】【   】【   】【   】
- ----------------------- """
- 
- #Table
- 
- #Change String Color
-
 print("Enter Your Fifth Guess:")
 guess()
 print("Enter Your Sixth Guess:")
 guess()
-print("Welp... Out of Luck.")
+print(turnRed("Welp... Out of Luck."))
