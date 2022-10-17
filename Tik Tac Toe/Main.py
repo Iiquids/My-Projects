@@ -1,6 +1,4 @@
-from random import choice
-import os, time
-from turtle import numinput
+import os, random
 
 '''
 SCUFFED TIC TAC TOE REMAKE ON PYTHON
@@ -22,6 +20,7 @@ winningCombination = [ ## All Winning Combos!
     [ 0, 4, 8 ],
     [ 2, 4, 6 ],
 ]
+availiabledigits = {"x" : [], "y": []}
 
 # & C:/Users/alexi/AppData/Local/Microsoft/WindowsApps/python3.9.exe "c:/Users/alexi/OneDrive/Documents/Coding/Random py Scripts/TiktakToe.py"
 
@@ -36,6 +35,7 @@ def appendToTable(num, table):
     table.append(num)
 
 def validCheck(number): # Checks If The Number is a 2 Digit, In The Alphabet, Amount is 0 or 1 or or 2
+    global gamemode
     if (len(number) == 2) is False:
         print("Message Was Larger Then 2 Digits")
         return False
@@ -51,8 +51,11 @@ def validCheck(number): # Checks If The Number is a 2 Digit, In The Alphabet, Am
             return False
     for i in cordnateHistory:
         if i == number:
-            print("Message Already Used")
-            return False
+            if gamemode == 2:
+                print("Message Already Used")
+                return False
+            else:
+                return False
     return True
 
 
@@ -77,9 +80,14 @@ def winCheck(): # Function Name Explains
             print("Player 1 Won!")
             somoneWon = True
         elif checkIfEqualsEachother(tikTable[i[0]], tikTable[i[1]], tikTable[i[2]]) == 2:
-            print("Player 1 Won!")
-            somoneWon = True
-            return
+            if gamemode == 2:
+                print("Player 2 Won!")
+                somoneWon = True
+                return
+            else:
+                print("Bot Wins!")
+                somoneWon = True
+                return
 
 def drawCheck(): # Function Name Explains
     global somoneWon
@@ -126,7 +134,6 @@ def getPosition(x, y): #Gets Position Of Number In TTT Table
     yTable0 = [0, 1, 2]
     yTable1 = [3, 4, 5]
     yTable2 = [6, 7, 8]
-
     posX = ''
     posY = ''
     if x == 0:
@@ -143,6 +150,11 @@ def getPosition(x, y): #Gets Position Of Number In TTT Table
     elif y == 2:
         posY = yTable2
     return posX, posY
+
+##  blank{x} | x | O
+##
+##
+
 
 def makeTable(x, y, player): # Makes a Array Based On The Player's Input
     global tikTable
@@ -170,6 +182,28 @@ if gamemode == '1': # Player VS Bot
     digit1, digit2 = checkTableNumberv2(inputSpot)
     os.system('CLS')
     makeTable(digit1, digit2, player)
+    while somoneWon == False: ## Keeps Looping Till Somone Won or It's A Draw
+        player = 2
+        botChoiceX = random.randint(0,2)
+        botChoiceY = random.randint(0,2)
+        botChoiceXY = str(botChoiceX) + str(botChoiceY)
+        while validCheck(botChoiceXY) == False:
+            print(f'messed up {botChoiceXY}')
+            botChoiceX = random.randint(0,2)
+            botChoiceY = random.randint(0,2)
+            botChoiceXY = str(botChoiceX) + str(botChoiceY)
+            print(botChoiceXY)
+            validCheck(botChoiceXY)
+        appendToTable(botChoiceXY, cordnateHistory)
+        os.system('CLS')
+        makeTable(botChoiceX, botChoiceY, player)
+        if somoneWon == True:
+            exit() ## Just Incase Player 2 Won Or Draw
+        player = 1
+        inputSpot = input('Player, Enter your X: ')
+        digit1, digit2 = checkTableNumberv2(inputSpot)
+        os.system('CLS')
+        makeTable(digit1, digit2, player)
 else: # Player VS Player
     os.system('CLS')
     player = 1
